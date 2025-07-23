@@ -45,10 +45,24 @@ class AutoStatusMixin:
 
                 target = rel_objects[idx]
 
-                # manager → bulk update
+                # ----- A) relation manager -----
                 if isinstance(target, models.Manager):
-                    target.update(**{self.status_attr: status})
-                # instance (obj) → save ตัวเดียว
-                elif target is not None:
+                    model_cls = target.model
+                    if hasattr(model_cls, self.status_attr):
+                        # M2M ปลายทางมี field status ➜ อัปเดต bulk ได้เลย
+                        target.update(**{self.status_attr: status})
+                    else:
+                        # M2M มี through modelกำหนดเอง ➜ หา through ที่มี status
+                        rel_field = target.field
+                        through   = rel_field.remote_field.through
+                        if hasattr(through, self.status_attr):
+                            from_fk = rel_field.m2m_field_name()
+                            through.objects.filter(**{from_fk: self.object})\
+                                            .update(**{self.status_attr: status})
+                        # ถ้าไม่เจอ status เลยก็ข้าม
+                    continue
+
+                # ----- B) instance (FK / O2O) -----
+                if target is not None and hasattr(target, self.status_attr):
                     setattr(target, self.status_attr, status)
                     target.save(update_fields=[self.status_attr])

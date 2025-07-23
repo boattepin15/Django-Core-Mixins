@@ -11,7 +11,6 @@ class BaseCreateView(FormsetMixin, LoginRequiredMixin, PermissionRequiredMixin, 
 class BaseUpdateView(FormsetMixin, LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     success_message = "แก้ไขข้อมูลสำเร็จแล้ว"
 
-
 class BaseListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     paginate_by = 10
 
