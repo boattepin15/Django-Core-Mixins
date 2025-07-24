@@ -1,0 +1,25 @@
+<tr class="formset-row align-middle">
+  {% for h in form.hidden_fields %}{{ h }}{% endfor %}
+
+  <td>
+    {{ form.section_title }}   {# hidden ได้ถ้าไม่อยากโชว์ #}
+    {{ form.description.errors }}
+    {{ form.description }}
+  </td>
+  <td class="text-center">{{ form.quantity.errors }}{{ form.quantity }}</td>
+  <td class="text-center">{{ form.unit.errors }}{{ form.unit }}</td>
+  <td class="text-center">{{ form.unit_price.errors }}{{ form.unit_price }}</td>
+  <td class="text-center">{{ form.vat_rate.errors }}{{ form.vat_rate }}</td>
+    {% if form.can_delete %}
+    <div class="form-check mt-2">
+      {{ form.DELETE }} {{ form.DELETE.label_tag }}
+    </div>
+  {% endif %}
+  <td class="text-center">
+    <button type="button" class="btn btn-outline-danger btn-sm"
+            onclick="this.closest('.formset-row').remove()">
+      Delete
+    </button>
+  </td>
+  </td>
+</tr>
