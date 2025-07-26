@@ -70,7 +70,6 @@ class FormsetMixin:
         formsets = [
             context.get(name) for name in self.formset_names if context.get(name) is not None
         ]
-
         # ถ้ามีสักชุดไม่ผ่าน validation → invalid
         if any(not fs.is_valid() for fs in formsets):
             messages.error(self.request, self.error_message)
