@@ -15,7 +15,7 @@ class BaseUpdateView(FormsetMixin, LoginRequiredMixin, PermissionRequiredMixin, 
 
 class BaseListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     paginate_by = 10
-
+    template_name = 'base_list.html'
     def get_queryset(self):
         queryset = super().get_queryset().order_by('-created_at')
         return queryset

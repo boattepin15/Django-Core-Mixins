@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load static %}
+{% load base_tags %}
+
+{% block content %}
+<div class="container-fluid">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3">{{ title|default:"รายการ" }}</h1>
+    <a href="{% if create_url_name %}{% url create_url_name %}{% else %}#{% endif %}" class="btn btn-success">
+      <i class="bi bi-plus-lg me-1"></i> เพิ่มใหม่
+    </a>
+  </div>
+
+  <form method="get" class="row g-2 mb-4">
+    <div class="col-md-4">
+      <input type="text" name="q" class="form-control" placeholder="ค้นหา..." value="{{ request.GET.q }}">
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-outline-primary">ค้นหา</button>
+    </div>
+  </form>
+
+  <div class="table-responsive">
+    <table class="table table-bordered align-middle table-hover">
+      <thead class="table-light text-center">
+        <tr>
+          {% for field in list_display %}
+            <th>{{ field_labels|dict_get:field }}</th>
+          {% endfor %}
+          <th style="width:150px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for obj in object_list %}
+          <tr>
+            {% for field in list_display %}
+              <td class="text-center">{{ obj|get_value:field }}</td>
+            {% endfor %}
+            <td class="text-center">
+              <a href="{% if view_url_name %}{% url view_url_name obj.pk %}{% else %}#{% endif %}" class="btn btn-sm btn-info text-white">
+                <i class="bi bi-eye"></i>
+              </a>
+              <a href="{% if update_url_name %}{% url update_url_name obj.pk %}{% else %}#{% endif %}" class="btn btn-sm btn-warning">
+                <i class="bi bi-pencil-square"></i>
+              </a>
+              <button
+                type="button"
+                class="btn btn-sm btn-danger"
+                data-bs-toggle="modal"
+                data-bs-target="#confirmDeleteModal"
+                data-url="{% if delete_url_name %}{% url delete_url_name obj.pk %}{% else %}#{% endif %}"
+                data-name="{{ obj }}">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="{{ list_display|length|add:'1' }}" class="text-center text-muted">ไม่พบข้อมูล</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+{# ✅ Bootstrap Modal สำหรับยืนยันลบ #}
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form method="post" id="deleteForm">
+      {% csrf_token %}
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmDeleteModalLabel">ยืนยันการลบ</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
+        </div>
+        <div class="modal-body">
+          คุณแน่ใจหรือไม่ว่าต้องการลบ <strong id="deleteObjectName">รายการนี้</strong> ?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+          <button type="submit" class="btn btn-danger">ลบ</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const modal = document.getElementById('confirmDeleteModal');
+  modal.addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget;
+    const url = button.getAttribute('data-url');
+    const name = button.getAttribute('data-name');
+
+    const form = modal.querySelector('#deleteForm');
+    form.action = url;
+
+    const nameSpan = modal.querySelector('#deleteObjectName');
+    nameSpan.textContent = name;
+  });
+</script>
+{% endblock %}
