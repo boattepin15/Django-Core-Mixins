@@ -1,0 +1,23 @@
+
+{% with row_sel=row_selector|default:'.formset-row' variant=btn_variant|default:'btn-outline-danger' size=btn_size|default:'btn-sm' icon=icon_class|default:'bi bi-trash' %}
+
+  {% if form and form.can_delete %}
+    <span class="d-none delete-checkbox">{{ form.DELETE }}</span>
+  {% endif %}
+
+  <button type="button" class="btn {{ variant }} {{ size }}"
+          onclick="(function(btn){
+            var row = btn.closest('{{ row_sel }}') || btn.closest('tr') || btn.closest('div');
+            if (!row) return;
+
+            if (!confirm('ยืนยันลบรายการนี้?')) return;
+
+            // ติ๊ก DELETE (ถ้ามี) และกัน required ตอน submit
+            var delCb = row.querySelector('input[name$=&quot;-DELETE&quot;]');
+            if (delCb) delCb.checked = true;
+            row.querySelectorAll('input,select,textarea').forEach(function(el){ el.disabled = true; });
+            row.style.display = 'none';
+          })(this)">
+    <i class="{{ icon }}"></i>{% if label %} {{ label }}{% endif %}
+  </button>
+{% endwith %}

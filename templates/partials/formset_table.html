@@ -1,0 +1,51 @@
+{% load form_extras %}
+{% load crispy_forms_tags %}
+
+{% load form_extras %}
+{% load crispy_forms_tags %}
+
+<table class="table table-bordered align-middle mb-0">
+  <thead class="table-light text-center">
+    <tr>
+      {% for column in columns %}
+        <th style="width:{{ column.width }}">{{ column.label }}</th>
+      {% endfor %}
+      <th style="width:5%;">#</th>          {# action column #}
+    </tr>
+  </thead>
+
+  <tbody id="formset-container-{{ prefix }}">
+    {{ formset.management_form }}
+
+    {% for form in formset.forms %}
+      <tr>
+        {% for column in columns %}
+          {% with field=form|get_field:column.name %}
+            <td>{{ field|as_crispy_field }}</td>
+          {% endwith %}
+        {% endfor %}
+
+        {# ───── Action / delete ───── #}
+        <td class="text-center">
+          {# hidden checkbox so Django knows to delete on POST #}
+          {% if form.DELETE %}
+            {{ form.DELETE.as_hidden }}
+          {% endif %}
+
+          <button type="button"
+                  class="btn btn-outline-danger btn-sm"
+                  title="Delete row"
+                  onclick="
+                     const row   = this.closest('tr');
+                     const delCb = row.querySelector('input[type=checkbox][name$=\'-DELETE\']');
+                     if (delCb) delCb.checked = true;
+
+                     row.style.display = 'none';
+                  ">
+            <i class="bi bi-trash"></i>
+          </button>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

@@ -1,0 +1,10 @@
+<button type="button" class="btn btn-sm btn-primary"
+        hx-get="{{ hx_url }}"
+        hx-vals='js:{"add-form": 1, "form_count": document.querySelector("#id_{{ prefix }}-TOTAL_FORMS").value}'
+        hx-target="#{{ container_id }}"
+        hx-swap="beforeend"
+        hx-on::after-request="
+          const total = document.querySelector('#id_{{ prefix }}-TOTAL_FORMS');
+          total.value = +total.value + 1;">
+  + เพิ่มรายการ
+</button>
