@@ -22,13 +22,21 @@ FormsetMixin
 แสดงข้อความสำเร็จ/ล้มเหลวผ่าน messages
 
 BaseCreateView / BaseUpdateView / BaseListView / BaseDetail / BaseDelete
+
 สืบทอดจาก FormsetMixin + Django CBV
+
 1.มี permission checking อัตโนมัติ
+
 2.ListView รองรับ pagination
+
 3.DynamicFormSetView
+
 4.ใช้ร่วมกับ HTMX เพื่อเพิ่ม/ลบ formset dynamically
+
 5.ใช้ partial template ในการโหลดฟอร์มใหม่
+
 6.Running Number
+
   RunningNumberField
   ฟิลด์พิเศษที่สร้างเลขรันตาม pattern เช่น:
   job_number = RunningNumberField(pattern="{THYY}{MM}{SEQ:04}")
